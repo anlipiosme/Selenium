@@ -48,7 +48,6 @@ public class MyTest {
         WebElement continueButton = driver.findElement(By.xpath("//button[contains(text(),'Продолжить')]"));
         continueButton.click();
         System.out.println("Кнопка 'Продолжить' работает корректно");
-   //     driver.quit();
     }
     @AfterTest
     public void closing() {
