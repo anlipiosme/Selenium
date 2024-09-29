@@ -1,57 +1,134 @@
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.*;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.example.RawText;
+import org.example.Woops;
+import org.junit.Test;
 
-import java.util.concurrent.TimeUnit;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 public class MyTest {
-    private WebDriver driver;
-    private final static String site = "https://www.mts.by/";
-    @BeforeTest
-    public void setUp() {
-        driver = new ChromeDriver();
-        driver.get(site);
+
+    private final static String postmanEcho = "https://postman-echo.com";
+
+    @Test
+    public void checkGetArgs() {
+        RestAssured.baseURI = postmanEcho;
+
+
+        given()
+                .log().all()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(Woops.orderReq)
+                .get("/get")
+                .then()
+                .statusCode(200)
+                .log().all();
     }
 
     @Test
-    public void titleTest() {
-        WebElement title = driver.findElement(By.xpath("//h2[contains(text(),'Онлайн пополнение')]"));
-            if (title.isDisplayed()) {
-                System.out.println("Название блока совпадает");
-            } else {
-                System.out.println("Название блока провалено");
-            }
+    public void checkRawText() {
+        RestAssured.baseURI = postmanEcho;
+
+        given()
+                .contentType("text/plain")
+                .body(RawText.rawText)
+                .log().all()
+                .when()
+                .post("/post")
+                .then()
+                .statusCode(200)
+                .log().all()
+                .body("data", equalTo(RawText.rawText));
     }
+
     @Test
-    public void paymentTest() {
-        WebElement tradeMark = driver.findElement(By.xpath("//div[@class='pay__partners']"));
-        if (tradeMark.isDisplayed()) {
-            System.out.println("Логотипы есть");
-        } else {
-            System.out.println("Логитипы провалились");
-        }
+    public void checkFormData() {
+        RestAssured.baseURI = postmanEcho;
+
+        given()
+                .contentType("application/json")
+                .body(Woops.orderReq)
+                .log().all()
+                .when()
+                .post("/post")
+                .then()
+                .statusCode(200)
+                .log().all()
+                .body("data.foo1", equalTo("bar1"))
+                .body("data.foo2", equalTo("bar2"));
     }
+
     @Test
-    public void service (){
-         WebElement link = driver.findElement(By.linkText("Подробнее о сервисе"));
-         link.click();
-         System.out.println("Ссылка 'Подробнее о сервисе' работает");
-        }
-    @Test
-    public void serviceConnection(){
-        WebElement connection = driver.findElement(By.xpath("//*[contains(text(), 'Услуги связи')]"));
-        connection.click();
-        WebElement phoneInput = driver.findElement(By.id("connection-phone"));
-        phoneInput.sendKeys("297777777");
-        WebElement continueButton = driver.findElement(By.xpath("//button[contains(text(),'Продолжить')]"));
-        continueButton.click();
-        System.out.println("Кнопка 'Продолжить' работает корректно");
+    public void checkPut() {
+        RestAssured.baseURI = postmanEcho;
+
+        String requestBody = "This is expected to be sent back as part of response body.";
+
+        Response response =
+                given()
+                        .queryParam("hand", "wave")
+                        .header("Content-Type", "text/plain")
+                        .body(requestBody)
+                        .when()
+                        .put("/put")
+                        .then()
+                        .statusCode(200)
+                        .body("data", equalTo(requestBody))
+                        .extract()
+                        .response();
+
+        System.out.println("Response Body:");
+        System.out.println(response.getBody().asString());
     }
-    @AfterTest
-    public void closing() {
-        driver.quit();
+
+    @Test
+    public void checkPath() {
+        RestAssured.baseURI = postmanEcho;
+
+        String requestBody = "This is expected to be sent back as part of response body.";
+
+        Response response =
+                given()
+                        .contentType("text/plain")
+                        .body(requestBody)
+                        .log().all()
+                        .when()
+                        .patch("/patch")
+                        .then()
+                        .statusCode(200)
+                        .log().all()
+                        .body("data", equalTo(requestBody))
+                        .extract()
+                        .response();
+
+        System.out.println("Response Body:");
+        System.out.println(response.getBody().asString());
+    }
+
+    @Test
+    public void checkDeleteText() {
+        RestAssured.baseURI = postmanEcho;
+
+        String requestBody = "This is expected to be sent back as part of response body.";
+
+        Response response =
+                given()
+                        .contentType("text/plain")
+                        .body(requestBody)
+                        .log().all()
+                        .when()
+                        .delete("/delete")
+                        .then()
+                        .statusCode(200)
+                        .log().all()
+                        .body("data", equalTo(requestBody))
+                        .extract()
+                        .response();
+
+        System.out.println("Response Body:");
+        System.out.println(response.getBody().asString());
     }
 }
-
