@@ -20,6 +20,7 @@ public class Installment extends BasePage{
         return this;
     }
 
+
     public static  String checkInstallmentPhoneBox() {
         return driver.findElement(installmentChoosePhone).getText();
     }

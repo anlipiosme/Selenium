@@ -18,6 +18,7 @@ public class BaseTest {
     protected Connection connection = new Connection(driver);
     protected FramePayment framePayment = new FramePayment(driver);
 
+
     @BeforeTest
     public void pageSetup() {
         driver.manage().window().maximize();

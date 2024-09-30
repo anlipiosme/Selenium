@@ -1,4 +1,7 @@
 
+import io.qameta.allure.Description;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pages.*;
@@ -8,9 +11,8 @@ import static helper.Urls.MTS_PAGE;
 
 public class MtsTest extends BaseTest{
 
-// С локаторами еще буду разбираться и побеждать эту тему
-// В общий проект с дз не могу перенести - я уже два раза все сломала
     @Test
+    @Description ("Проверка заголовка")
     public void checkTitle(){
         basePage.open(MTS_PAGE);
         SoftAssert softAssert = new SoftAssert();
@@ -19,28 +21,40 @@ public class MtsTest extends BaseTest{
     }
 
     @Test
+    @Description ("Проверка логотипов")
     public void checkTradeMarks (){
         mtsPage.checkTradeMarks();
     }
 
     @Test
+    @Description ("Проверка ссылки Подробнее о сервисе")
     public void checkService(){
         mtsPage.checkServise();
     }
 
     @Test
-  //Тут нужна помощь
-    public void checkConnections (){
+    @Description ("Проверка оплаты")
+    public FramePayment checkConnections (){
         basePage.open(MTS_PAGE);
-        connectionService.checkConnection();
 
+        connectionService.checkConnection();
+        return new FramePayment(driver);
+
+
+    }
+    @Test
+    @Description ("Проверка фрейма")
+    public void checkFrame(){
         SoftAssert softAssert = new SoftAssert();
-        String expectedSum = "11.00";
+        String expectedSum = "11.00 BYN";
+        String expectedSumButton = "Оплатить  11.00 BYN ";
+
         softAssert.assertEquals(FramePayment.checkFrameDescription(),expectedSum, "Ошибка");
-        softAssert.assertEquals(FramePayment.checkButtomSum(),expectedSum, "Ошибка");
+        softAssert.assertEquals(FramePayment.checkButtomSum(),expectedSumButton, "Ошибка");
     }
 
     @Test
+    @Description ("Проверка меню Интернет")
     public void CheckNetService(){
         basePage.open(MTS_PAGE);
         netService.checkNet();
@@ -55,6 +69,7 @@ public class MtsTest extends BaseTest{
     }
 
     @Test
+    @Description("Проверка меню Задолженность")
     public void CheckDebtService(){
         basePage.open(MTS_PAGE);
         debt.checkDebt();
@@ -69,6 +84,7 @@ public class MtsTest extends BaseTest{
     }
 
     @Test
+    @Description("Проверка меню Рассрочка")
     public void CheckInstallmentService(){
         basePage.open(MTS_PAGE);
         installment.checkInstallment();
@@ -83,6 +99,7 @@ public class MtsTest extends BaseTest{
     }
 
     @Test
+    @Description("Проверка меню Связь")
     public void CheckConnectionService(){
         basePage.open(MTS_PAGE);
         SoftAssert softAssert = new SoftAssert();

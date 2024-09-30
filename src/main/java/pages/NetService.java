@@ -33,4 +33,5 @@ public class NetService extends BasePage{
     public static  String checkNetEmailBox() {
         return driver.findElement(netEmail).getText();
     }
+
 }

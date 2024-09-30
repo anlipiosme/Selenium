@@ -12,12 +12,14 @@ public class ConnectionService extends BasePage{
     By phoneInput = By.id ("connection-phone");
     By sum = By.id ("connection-sum");
     By continueButton = By.xpath ("//button[contains(text(),'Продолжить')]");
-    By frameFind = By.xpath("/html/body/div[8]/div/iframe");
+    public By frameFind = By.xpath("//iframe[@class='bepaid-iframe']");
 
-    public void checkConnection(){
+    public By checkConnection(){
         driver.findElement(phoneInput).sendKeys("297777777");
         driver.findElement(sum).sendKeys("11");
         driver.findElement(continueButton).click();
         driver.switchTo().frame((WebElement) frameFind);
+        return frameFind;
+
     }
 }
